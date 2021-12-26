@@ -1,0 +1,10 @@
+@import 'styles/base.scss';
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto 20px;
+}

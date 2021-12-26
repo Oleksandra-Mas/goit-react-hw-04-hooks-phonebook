@@ -1,0 +1,6 @@
+@import 'styles/base.scss';
+
+.contact_list {
+    @extend %list;
+    margin-top: 20px;
+}
