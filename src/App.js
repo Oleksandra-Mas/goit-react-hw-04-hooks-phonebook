@@ -1,88 +1,80 @@
-import { Component } from "react";
-import shortid from "shortid";
-import "bootstrap/dist/css/bootstrap.css";
-import { Alert } from "react-bootstrap";
+import { useEffect, useRef, useState } from 'react';
+import shortid from 'shortid';
+import 'bootstrap/dist/css/bootstrap.css';
+import { Alert } from 'react-bootstrap';
 
-import "./App.css";
-import ContactForm from "./components/ContactForm";
-import ContactList from "./components/ContactList";
-import Filter from "./components/Filter/";
-import apiLS from "./helpers/LocalStorage";
+import './App.css';
+import ContactForm from './components/ContactForm';
+import ContactList from './components/ContactList';
+import Filter from './components/Filter/';
+import apiLS from './helpers/LocalStorage';
 
-export default class App extends Component {
-  state = {
-    contacts: [],
-    filter: "",
-  };
+export default function App() {
+    const [contacts, setContacts] = useState([]);
+    const [filter, setFilter] = useState('');
+    const firstRender = useRef(true);
 
-  componentDidMount() {
-    const contacts = apiLS.getFromList();
-    this.setState({ contacts });
-  }
+    useEffect(() => {
+        if (firstRender.current) {
+            const contacts = apiLS.getFromList();
+            setContacts(contacts);
+            firstRender.current = false;
+            return;
+        }
+        apiLS.addToList(contacts);
+    }, [contacts]);
 
-  componentDidUpdate(prevProps, prevState) {
-    const { contacts } = this.state;
-    if (contacts !== prevState.contacts) {
-      apiLS.addToList(contacts);
-    }
-  }
+    const addContact = data => {
+        checkUniqueName(data.name) === -1
+            ? setContacts(prevCont => [
+                  ...prevCont,
+                  { id: shortid.generate(), ...data },
+              ])
+            : alert(`${data.name} is already in contacts`);
+    };
 
-  addContact = (data) => {
-    this.checkUniqueName(data.name) === -1
-      ? this.setState((prevState) => ({
-          contacts: [
-            ...prevState.contacts,
-            { id: shortid.generate(), ...data },
-          ],
-        }))
-      : alert(`${data.name} is already in contacts`);
-  };
-  deleteContact = (id) => {
-    this.setState((prevState) => ({
-      contacts: [...prevState.contacts].filter((contact) => contact.id !== id),
-    }));
-  };
+    const deleteContact = id => {
+        setContacts(prevContacts =>
+            [...prevContacts].filter(contact => contact.id !== id),
+        );
+    };
 
-  changeFilter = (data) => {
-    this.setState({ filter: data.toLowerCase() });
-  };
+    const changeFilter = data => {
+        setFilter(data.toLowerCase());
+    };
 
-  checkUniqueName = (name) => {
-    const { contacts } = this.state;
-    return contacts.findIndex((contact) => contact.name === name);
-  };
+    const checkUniqueName = name => {
+        return contacts.findIndex(contact => contact.name === name);
+    };
 
-  getFilteredContacts = () => {
-    const { contacts, filter } = this.state;
-    return contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(filter)
-    );
-  };
+    const getFilteredContacts = () => {
+        return contacts.filter(contact =>
+            contact.name.toLowerCase().includes(filter),
+        );
+    };
 
-  render() {
-    const { filter } = this.state;
-    const filteredContacts = this.getFilteredContacts();
+    const filteredContacts = getFilteredContacts();
+
     return (
-      <div className="App">
-        <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.addContact} />
-        <h2>Contacts</h2>
-        <Filter
-          title={"Find contacts by name"}
-          filter={filter}
-          onChange={this.changeFilter}
-        />
-        {filteredContacts.length ? (
-          <ContactList
-            contacts={filteredContacts}
-            onDelete={this.deleteContact}
-          />
-        ) : (
-          <Alert className="Alert" variant="dark">
-            Nothing found
-          </Alert>
-        )}
-      </div>
+        <div className="App">
+            <h1>Phonebook</h1>
+            <ContactForm onSubmit={addContact} />
+            <h2>Contacts</h2>
+            <Filter
+                title={'Find contacts by name'}
+                filter={filter}
+                onChange={changeFilter}
+            />
+            {filteredContacts.length ? (
+                <ContactList
+                    contacts={filteredContacts}
+                    onDelete={deleteContact}
+                />
+            ) : (
+                <Alert className="Alert" variant="dark">
+                    Nothing found
+                </Alert>
+            )}
+        </div>
     );
-  }
 }
