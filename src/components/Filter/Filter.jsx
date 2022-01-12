@@ -1,44 +1,41 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
 
 const Label = styled.label`
-  display: flex;
-  flex-direction: column;
-  max-width: 400px;
-  width: 100%;
-  margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
 `;
 
-class Filter extends Component {
-    static propTypes = {
-        filter: PropTypes.string.isRequired,
-        title: PropTypes.string,
-        onChange: PropTypes.func.isRequired,
-    };
-    handleFilterChange = event => {
+export default function Filter({ filter, title, onChange }) {
+    const handleFilterChange = event => {
         const { value } = event.target;
-        this.props.onChange(value);
+        onChange(value);
     };
-    filterId = shortid.generate();
-    render() {
-        const { filter, title } = this.props;
-        return (
-            <Label htmlFor={this.filterId}>
-                <span>{title}</span>
-                <Form.Control
-                    type="text"
-                    name="filter"
-                    required
-                    value={filter}
-                    onChange={this.handleFilterChange}
-                    placeholder="Search..."
-                    id={this.filterId}
-                />
-            </Label>
-        );
-    }
+
+    const filterId = shortid.generate();
+    return (
+        <Label htmlFor={filterId}>
+            <span>{title}</span>
+            <Form.Control
+                type="text"
+                name="filter"
+                required
+                value={filter}
+                onChange={handleFilterChange}
+                placeholder="Search..."
+                id={filterId}
+            />
+        </Label>
+    );
 }
-export default Filter;
+Filter.propTypes = {
+    filter: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+};
