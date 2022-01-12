@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import shortid from 'shortid';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Alert } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
 import ContactForm from './components/ContactForm';
@@ -30,7 +32,7 @@ export default function App() {
                   ...prevCont,
                   { id: shortid.generate(), ...data },
               ])
-            : alert(`${data.name} is already in contacts`);
+            : toast(`${data.name} is already in contacts`);
     };
 
     const deleteContact = id => {
@@ -44,7 +46,9 @@ export default function App() {
     };
 
     const checkUniqueName = name => {
-        return contacts.findIndex(contact => contact.name === name);
+        return contacts.findIndex(
+            contact => contact.name.toLowerCase() === name.toLowerCase(),
+        );
     };
 
     const getFilteredContacts = () => {
@@ -75,6 +79,7 @@ export default function App() {
                     Nothing found
                 </Alert>
             )}
+            <ToastContainer />
         </div>
     );
 }
