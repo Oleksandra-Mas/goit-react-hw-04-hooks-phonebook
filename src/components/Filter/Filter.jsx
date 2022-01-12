@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
+import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
 
-import styles from './Filter.module.scss';
+const Label = styled.label`
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+`;
 
 class Filter extends Component {
     static propTypes = {
@@ -19,7 +26,7 @@ class Filter extends Component {
     render() {
         const { filter, title } = this.props;
         return (
-            <label className={styles.label} htmlFor={this.filterId}>
+            <Label htmlFor={this.filterId}>
                 <span>{title}</span>
                 <Form.Control
                     type="text"
@@ -30,7 +37,7 @@ class Filter extends Component {
                     placeholder="Search..."
                     id={this.filterId}
                 />
-            </label>
+            </Label>
         );
     }
 }

@@ -2,8 +2,16 @@ import React, { useState } from 'react';
 import shortid from 'shortid';
 import { Button, Form } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
-import styles from './ContactForm.module.scss';
+const FormWrapper = styled.form`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto 20px;
+`;
 
 export default function ContactForm({ onSubmit }) {
     const [name, setName] = useState('');
@@ -35,7 +43,7 @@ export default function ContactForm({ onSubmit }) {
         setNumber('');
     };
     return (
-        <Form className={styles.form} onSubmit={handleSubmit}>
+        <FormWrapper onSubmit={handleSubmit}>
             <Form.Label htmlFor={nameId}>
                 Name
                 <Form.Control
@@ -65,7 +73,7 @@ export default function ContactForm({ onSubmit }) {
             <Button variant="outline-dark" type="sumbit">
                 Add contact
             </Button>
-        </Form>
+        </FormWrapper>
     );
 }
 ContactForm.propTypes = {

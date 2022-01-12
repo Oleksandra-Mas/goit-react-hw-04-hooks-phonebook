@@ -1,10 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
-import styles from './ContactListItem.module.scss';
+import styled from 'styled-components';
+
+const Item = styled.li`
+  display: flex;
+  flex-direction: column;
+`;
+
 export default function ContactListItem({ contact, onDelete }) {
     return (
-        <li className={styles.item}>
+        <Item>
             <p>{contact.name}</p>
             <a href={'tel:' + contact.number}>{contact.number}</a>
             <Button
@@ -16,7 +22,7 @@ export default function ContactListItem({ contact, onDelete }) {
             >
                 Delete
             </Button>
-        </li>
+        </Item>
     );
 }
 ContactListItem.propTypes = {
